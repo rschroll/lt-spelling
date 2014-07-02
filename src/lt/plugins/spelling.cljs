@@ -22,7 +22,7 @@
   (when-let [overlay (:spell-overlay @editor)]
     (.removeOverlay (ed/->cm-ed editor) overlay)))
 
-(behavior ::enable-spelling
+(behavior ::enable
           :triggers #{:object.instant}
           :desc "Spell check: Enable"
           :type :user
@@ -30,7 +30,7 @@
           :reaction (fn [editor]
                       (addOverlay editor default-lang)))
 
-(behavior ::enable-spelling-lang
+(behavior ::enable-lang
           :triggers #{:object.instant}
           :desc "Spell check: Set language"
           :params [{:label "Language code" :type :string}]
