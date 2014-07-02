@@ -18,12 +18,14 @@ OverlayManager.prototype = {
 
       this.overlays[lang] = {
         token: function (stream) {
+          var backslashes = stream.match(/\\+/);
+
           // Get the current word and check if it's misspelled
-          if (stream.match(/\w+('\w+)*/) && !dictionary.check(stream.current()))
+          if (stream.match(/\w+('\w+)*/) && !backslashes && !dictionary.check(stream.current()))
             return "spell-error";
 
           // If not, mark it and any following non-word characters as OK
-          stream.match(/[^\w]*/);
+          stream.match(/[^\w\\]*/);
           return null;
         }
       };
