@@ -12,7 +12,7 @@ OverlayManager.prototype = {
         aff = this.fs.readFileSync("/usr/share/hunspell/" + lang + ".aff", encoding="UTF-8");
         dic = this.fs.readFileSync("/usr/share/hunspell/" + lang + ".dic", encoding="UTF-8");
       } catch (error) {
-        throw "Could not load dictionary for " + lang;
+        return "Could not load dictionary for " + lang;
       }
       var dictionary = new Typo(lang, aff, dic, {platform: "node-webkit"});
 

@@ -12,12 +12,32 @@
 (defn addOverlay [editor lang]
   (removeOverlay editor)
   (let [overlay (.getOverlay manager lang)]
-    (.addOverlay (ed/->cm-ed editor) overlay)
-    (object/merge! editor {:spell-overlay overlay})))
+    (if (string? overlay)
+      (js/console.log overlay)
+      (do
+        (.addOverlay (ed/->cm-ed editor) overlay)
+        (object/merge! editor {:spell-overlay overlay})))))
 
 (defn removeOverlay [editor]
   (when-let [overlay (:spell-overlay @editor)]
     (.removeOverlay (ed/->cm-ed editor) overlay)))
+
+(behavior ::enable-spelling
+          :triggers #{:object.instant}
+          :desc "Spell check: Enable"
+          :type :user
+          :exclusive true
+          :reaction (fn [editor]
+                      (addOverlay editor default-lang)))
+
+(behavior ::enable-spelling-lang
+          :triggers #{:object.instant}
+          :desc "Spell check: Set language"
+          :params [{:label "Language code" :type :string}]
+          :type :user
+          :exclusive true
+          :reaction (fn [editor lang]
+                      (addOverlay editor lang)))
 
 (cmd/command {:command ::spell-default
               :desc "Spell check: Enable"
@@ -27,7 +47,7 @@
 
 (cmd/command {:command ::spell-disable
               :desc "Spell check: Disable"
-              :exec (fn[]
+              :exec (fn []
                       (when-let [editor (pool/last-active)]
                         (removeOverlay editor)))})
 
