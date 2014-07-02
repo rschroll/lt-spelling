@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Typo is a JavaScript implementation of a spellchecker using hunspell-style 
  * dictionaries.
