@@ -39,6 +39,15 @@
           :reaction (fn [editor lang]
                       (addOverlay editor lang)))
 
+(behavior ::set-dictionary-location
+          :triggers #{:object.instant}
+          :desc "Spell check: Set dictionary location"
+          :params [{:label "Directory" :type :string}]
+          :type :user
+          :exclusive true
+          :reaction (fn [app loc]
+                      (.setDictDir manager loc)))
+
 (cmd/command {:command ::spell-default
               :desc "Spell check: Enable"
               :exec (fn []

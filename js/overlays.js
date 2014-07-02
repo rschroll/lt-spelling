@@ -1,6 +1,8 @@
 var OverlayManager = function () {
   this.fs = require('fs');
+  this.path = require('path');
   this.overlays = {};
+  this.dictDir = "/usr/share/hunspell/";
   return this;
 }
 
@@ -9,8 +11,8 @@ OverlayManager.prototype = {
     if (this.overlays[lang] === undefined) {
       var aff, dic;
       try {
-        aff = this.fs.readFileSync("/usr/share/hunspell/" + lang + ".aff", encoding="UTF-8");
-        dic = this.fs.readFileSync("/usr/share/hunspell/" + lang + ".dic", encoding="UTF-8");
+        aff = this.fs.readFileSync(this.path.join(this.dictDir, lang + ".aff"), encoding="UTF-8");
+        dic = this.fs.readFileSync(this.path.join(this.dictDir, lang + ".dic"), encoding="UTF-8");
       } catch (error) {
         return "Could not load dictionary for " + lang;
       }
@@ -32,5 +34,10 @@ OverlayManager.prototype = {
     }
 
     return this.overlays[lang];
+  },
+
+  setDictDir: function (loc) {
+    this.overlays = {};  // Reset, so read in from new location
+    this.dictDir = loc;
   }
 }
