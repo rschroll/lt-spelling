@@ -1,3 +1,6 @@
+;; Copyright 2014 Robert Schroll
+;; This file is part of Spelling and is distributed under the MIT license.
+
 (ns lt.plugins.spelling
   (:require [lt.object :as object]
             [lt.objs.editor :as ed]

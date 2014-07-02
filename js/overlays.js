@@ -1,3 +1,8 @@
+/**
+ * Copyright 2014 Robert Schroll
+ * This file is part of Spelling and is distributed under the MIT license.
+ */
+
 var OverlayManager = function () {
   this.fs = require('fs');
   this.path = require('path');
