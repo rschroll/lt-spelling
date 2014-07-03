@@ -63,14 +63,22 @@
                       (when-let [editor (pool/last-active)]
                         (removeOverlay editor)))})
 
-(def lang-input (sbcmd/options-input {:placeholder "Language code"}))
+(def lang-input (doto
+                  (sbcmd/filter-list {:items #(.getLanguages manager)
+                                      :key identity
+                                      :placeholder "Language"})
+                  (object/add-behavior! ::exec-active!)
+                  (object/add-behavior! ::refresh-items!)))
 
 (behavior ::exec-active!
           :triggers #{:select}
           :reaction (fn [this l]
                       (sbcmd/exec-active! l)))
 
-(object/add-behavior! lang-input ::exec-active!)
+(behavior ::refresh-items!
+          :triggers #{:focus!}
+          :reaction (fn [this]
+                      (object/raise this :refresh!)))
 
 (cmd/command {:command ::spell-lang
               :desc "Spell check: Set language"

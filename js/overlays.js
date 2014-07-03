@@ -44,5 +44,12 @@ OverlayManager.prototype = {
   setDictDir: function (loc) {
     this.overlays = {};  // Reset, so read in from new location
     this.dictDir = loc;
+  },
+
+  getLanguages: function () {
+    return this.fs.readdirSync(this.dictDir).map(function (val) {
+      var comp = val.split(".");
+      return (comp[1] === "aff") ? comp[0] : null;
+    }).filter(function (val) { return val; });
   }
 }
