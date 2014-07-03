@@ -34,6 +34,16 @@ OverlayManager.prototype = {
           // If not, mark it and any following non-word characters as OK
           stream.match(/[^\w\\]*/);
           return null;
+        },
+
+        suggest: function (line, col) {
+          var start = line.substring(0, col).search(/[\w']*$/),
+              match = line.substring(start).match(/\w+('\w+)*/);
+          if (match)
+            return {start: start + match.index,
+                    size: match[0].length,
+                    suggestions: dictionary.suggest(match[0])};
+          return {start: start, size: 0, suggestions: []}
         }
       };
     }

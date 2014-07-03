@@ -1,2 +1,3 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["js/typo.js" "js/overlays.js" "spelling_compiled.js"])
-           (:lt.objs.plugins/load-css "css/spelling.css")]}}
+           (:lt.objs.plugins/load-css "css/spelling.css")]
+     :editor.spellcheck [:lt.plugins.spelling/spell-menu]}}

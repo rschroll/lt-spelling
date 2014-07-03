@@ -19,11 +19,30 @@
       (js/console.log overlay)
       (do
         (.addOverlay (ed/->cm-ed editor) overlay)
-        (object/merge! editor {:spell-overlay overlay})))))
+        (object/merge! editor {:spell-overlay overlay})
+        (object/add-tags editor [:editor.spellcheck])))))
 
 (defn removeOverlay [editor]
   (when-let [overlay (:spell-overlay @editor)]
-    (.removeOverlay (ed/->cm-ed editor) overlay)))
+    (.removeOverlay (ed/->cm-ed editor) overlay)
+    (object/remove-tags editor [:editor.spellcheck])))
+
+(defn getSuggestions []
+  (when-let [editor (pool/last-active)]
+    (when-let [overlay (:spell-overlay @editor)]
+      (let [pos (ed/->cursor editor)
+            ln (:line pos)
+            line (ed/line editor ln)
+            {start "start"
+             size "size"
+             suggestions "suggestions"} (js->clj (.suggest overlay line (:ch pos)))]
+        (map (fn [v]
+               {:label v
+                :order 0.3
+                :click (fn []
+                         (ed/replace editor {:line ln :ch start} {:line ln :ch (+ start size)} v))})
+             suggestions)))))
+
 
 (behavior ::enable
           :triggers #{:object.instant}
@@ -51,7 +70,17 @@
           :reaction (fn [app loc]
                       (.setDictDir manager loc)))
 
-(cmd/command {:command ::spell-default
+(behavior ::spell-menu
+          :triggers #{:menu+}
+          :reaction (fn [this items]
+                      (let [suggestions (getSuggestions)]
+                        (if (seq suggestions)
+                          (conj (concat items (getSuggestions))
+                                {:type "separator" :order 0.4})
+                          items))))
+
+
+(cmd/command {:command ::spell-enable
               :desc "Spell check: Enable"
               :exec (fn []
                       (when-let [editor (pool/last-active)]
@@ -63,13 +92,6 @@
                       (when-let [editor (pool/last-active)]
                         (removeOverlay editor)))})
 
-(def lang-input (doto
-                  (sbcmd/filter-list {:items #(.getLanguages manager)
-                                      :key identity
-                                      :placeholder "Language"})
-                  (object/add-behavior! ::exec-active!)
-                  (object/add-behavior! ::refresh-items!)))
-
 (behavior ::exec-active!
           :triggers #{:select}
           :reaction (fn [this l]
@@ -78,7 +100,20 @@
 (behavior ::refresh-items!
           :triggers #{:focus!}
           :reaction (fn [this]
+                      (object/raise this :clear!)
                       (object/raise this :refresh!)))
+
+(behavior ::close-on-blur!
+          :triggers #{:inactive}
+          :reaction (fn [this]
+                      (object/raise this :escape!)))
+
+(def lang-input (doto
+                  (sbcmd/filter-list {:items #(.getLanguages manager)
+                                      :key identity
+                                      :placeholder "Language"})
+                  (object/add-behavior! ::exec-active!)
+                  (object/add-behavior! ::refresh-items!)))
 
 (cmd/command {:command ::spell-lang
               :desc "Spell check: Set language"
@@ -86,3 +121,17 @@
               :exec (fn [lang]
                       (when-let [editor (pool/last-active)]
                         (addOverlay editor lang)))})
+
+(def suggest-input (doto
+                     (sbcmd/filter-list {:items getSuggestions
+                                         :key :label
+                                         :placeholder ""})
+                     (object/add-behavior! ::exec-active!)
+                     (object/add-behavior! ::refresh-items!)
+                     (object/add-behavior! ::close-on-blur!)))
+
+(cmd/command {:command ::spell-suggestion
+              :desc "Spell check: Get suggestions"
+              :options suggest-input
+              :exec (fn [value]
+                      ((:click value)))})
