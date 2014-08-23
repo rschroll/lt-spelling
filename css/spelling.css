@@ -1,3 +1,5 @@
 .CodeMirror .cm-spell-error {
-  background: url(underline.png) bottom repeat-x;
+  background-image: url(underline.png);
+  background-position: bottom;
+  background-repeat: repeat-x;
 }
