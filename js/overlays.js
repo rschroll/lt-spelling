@@ -6,8 +6,10 @@
 var OverlayManager = function () {
   this.fs = require('fs');
   this.path = require('path');
+  this.iconv = require(lt.objs.plugins.local_module("Spelling", "iconv-lite"));
   this.overlays = {};
   this.dictDir = "/usr/share/hunspell/";
+  this.encodingRE = /^SET (.*)/m;
   return this;
 }
 
@@ -16,8 +18,12 @@ OverlayManager.prototype = {
     if (this.overlays[lang] === undefined) {
       var aff, dic;
       try {
-        aff = this.fs.readFileSync(this.path.join(this.dictDir, lang + ".aff"), encoding="UTF-8");
-        dic = this.fs.readFileSync(this.path.join(this.dictDir, lang + ".dic"), encoding="UTF-8");
+        var aff_buf = this.fs.readFileSync(this.path.join(this.dictDir, lang + ".aff")),
+            encoding_match = this.encodingRE.exec(aff_buf.toString("ascii")),
+            encoding = encoding_match ? encoding_match[1].replace("microsoft-", "") : "UTF-8";
+        aff = this.iconv.decode(aff_buf, encoding);
+        dic = this.iconv.decode(this.fs.readFileSync(this.path.join(this.dictDir, lang + ".dic")),
+                                encoding);
       } catch (error) {
         return "Could not load dictionary for " + lang;
       }
