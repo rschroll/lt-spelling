@@ -27,24 +27,39 @@ OverlayManager.prototype = {
       } catch (error) {
         return "Could not load dictionary for " + lang;
       }
-      var dictionary = new Typo(lang, aff, dic, {platform: "node-webkit"});
+
+      var dictionary = new Typo(lang, aff, dic, {platform: "node-webkit"}),
+          alphaHash = {},
+          alphabet = "";
+      // Gather the alphabet used in the words in the dictionary.
+      // From commented-out code in Typo.js.
+      for (var word in dictionary.dictionaryTable)
+        for (var i=0; i<word.length; i++)
+          alphaHash[word[i]] = true;
+      for (var letter in alphaHash)
+        alphabet += letter;
+      alphabet = alphabet.replace(/[\t'\-_\.]/g, "").split("").sort().join("");
+
+      var word = new RegExp("[" + alphabet + "]+('[" + alphabet + "]+)*"),
+          notword = new RegExp("[^" + alphabet + "\\\\]*"),
+          wordstart = new RegExp("[" + alphabet + "']*$");
 
       this.overlays[lang] = {
         token: function (stream) {
           var backslashes = stream.match(/\\+/);
 
           // Get the current word and check if it's misspelled
-          if (stream.match(/\w+('\w+)*/) && !backslashes && !dictionary.check(stream.current()))
+          if (stream.match(word) && !backslashes && !dictionary.check(stream.current()))
             return "spell-error";
 
           // If not, mark it and any following non-word characters as OK
-          stream.match(/[^\w\\]*/);
+          stream.match(notword);
           return null;
         },
 
         suggest: function (line, col) {
-          var start = line.substring(0, col).search(/[\w']*$/),
-              match = line.substring(start).match(/\w+('\w+)*/);
+          var start = line.substring(0, col).search(wordstart),
+              match = line.substring(start).match(word);
           if (match)
             return {start: start + match.index,
                     size: match[0].length,
