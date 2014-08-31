@@ -1,4 +1,8 @@
-.CodeMirror .cm-spell-error {
+.CodeMirror:not(.spelling-markup) .cm-spell-error.cm-comment,
+.CodeMirror:not(.spelling-markup) .cm-spell-error.cm-string,
+.CodeMirror:not(.spelling-markup) .cm-spell-error.cm-string-2,
+.CodeMirror.spelling-markup .cm-spell-error:not(.cm-atom):not(.cm-attribute):not(.cm-tag):not(.cm-number):not(.cm-variable-2):not(.cm-string)
+{
   background-image: url(underline.png);
   background-position: bottom;
   background-repeat: repeat-x;

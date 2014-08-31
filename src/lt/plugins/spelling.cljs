@@ -18,6 +18,9 @@
     (if (string? overlay)
       (js/console.log overlay)
       (do
+        (if (object/has-tag? editor :editor.spelling.markup)
+          (ed/+class editor "spelling-markup")
+          (ed/-class editor "spelling-markup"))
         (.addOverlay (ed/->cm-ed editor) overlay)
         (object/merge! editor {:spell-overlay overlay})
         (object/add-tags editor [:editor.spellcheck])))))

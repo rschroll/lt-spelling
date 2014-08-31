@@ -33,9 +33,21 @@ Spell checking can be automatically enabled for certain file types by
 adding the `:lt.plugins.spelling/enable` or
 `(:lt.plugins.spelling/enable-lang <code>)` behaviors to the
 appropriate tags.  For example, to enable spell checking in the default
-language in all TeX files, add to your `user/behaviors` file:
+language in all TeX files, add to your `user.behaviors` file:
 ```clojure
 {:+ {:editor.latex [:lt.plugins.spelling/enable]}}
+```
+
+There are two modes Spelling uses to determine which words should be
+spellchecked.  In the default mode, aimed at programming languages, it
+checks only comments and strings.  In its markup language mode, all
+strings except commands are checked.  This mode is indicated by the
+presence of the `:editor.spelling.markup` tag.  By default, HTML, XML,
+Markdown, LaTeX, and plain text files are given this tag.  To indicate
+that editors with the tag `:foo` should use markup mode, add to your
+`user.behaviors` file:
+```clojure
+{:+ {:foo [(:lt.object/add-tag :editor.spelling.markup)]}}
 ```
 
 License

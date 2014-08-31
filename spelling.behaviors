@@ -1,3 +1,8 @@
 {:+ {:app [(:lt.objs.plugins/load-js ["js/typo.js" "js/overlays.js" "spelling_compiled.js"])
            (:lt.objs.plugins/load-css "css/spelling.css")]
+     :editor.html      [(:lt.object/add-tag :editor.spelling.markup)]
+     :editor.latex     [(:lt.object/add-tag :editor.spelling.markup)]
+     :editor.markdown  [(:lt.object/add-tag :editor.spelling.markup)]
+     :editor.plaintext [(:lt.object/add-tag :editor.spelling.markup)]
+     :editor.xml       [(:lt.object/add-tag :editor.spelling.markup)]
      :editor.spellcheck [:lt.plugins.spelling/spell-menu]}}

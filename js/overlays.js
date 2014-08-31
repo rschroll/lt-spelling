@@ -41,15 +41,13 @@ OverlayManager.prototype = {
       alphabet = alphabet.replace(/[\t'\-_\.]/g, "").split("").sort().join("");
 
       var word = new RegExp("[" + alphabet + "]+('[" + alphabet + "]+)*"),
-          notword = new RegExp("[^" + alphabet + "\\\\]*"),
+          notword = new RegExp("[^" + alphabet + "]*"),
           wordstart = new RegExp("[" + alphabet + "']*$");
 
       this.overlays[lang] = {
         token: function (stream) {
-          var backslashes = stream.match(/\\+/);
-
           // Get the current word and check if it's misspelled
-          if (stream.match(word) && !backslashes && !dictionary.check(stream.current()))
+          if (stream.match(word) && !dictionary.check(stream.current()))
             return "spell-error";
 
           // If not, mark it and any following non-word characters as OK
