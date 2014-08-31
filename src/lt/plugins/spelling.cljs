@@ -11,6 +11,8 @@
 
 (def manager (js* "new OverlayManager()"))
 (def default-lang (first (.split (aget js/process.env "LANG") ".")))
+(def check-tokens #{"comment" "string" "string-2"})
+(def skip-tokens #{"atom" "attribute" "tag", "number" "variable-2" "string"})
 
 (defn addOverlay [editor lang]
   (removeOverlay editor)
@@ -36,15 +38,19 @@
       (let [pos (ed/->cursor editor)
             ln (:line pos)
             line (ed/line editor ln)
-            {start "start"
-             size "size"
-             suggestions "suggestions"} (js->clj (.suggest overlay line (:ch pos)))]
-        (map (fn [v]
-               {:label v
-                :order 0.3
-                :click (fn []
-                         (ed/replace editor {:line ln :ch start} {:line ln :ch (+ start size)} v))})
-             suggestions)))))
+            token-type (ed/->token-type editor pos)
+            markup? (object/has-tag? editor :editor.spelling.markup)]
+        (if (or (and (not markup?) (contains? check-tokens token-type))
+                (and markup? (not (contains? skip-tokens token-type))))
+          (let [{start "start"
+                 size "size"
+                 suggestions "suggestions"} (js->clj (.suggest overlay line (:ch pos)))]
+            (map (fn [v]
+                   {:label v
+                    :order 0.3
+                    :click (fn []
+                             (ed/replace editor {:line ln :ch start} {:line ln :ch (+ start size)} v))})
+                 suggestions)))))))
 
 
 (behavior ::enable
