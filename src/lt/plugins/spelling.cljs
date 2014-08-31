@@ -78,7 +78,7 @@
           :reaction (fn [this items]
                       (let [suggestions (getSuggestions)]
                         (if (seq suggestions)
-                          (conj (concat items (getSuggestions))
+                          (conj (concat items suggestions)
                                 {:type "separator" :order 0.4})
                           items))))
 
