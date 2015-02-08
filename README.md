@@ -24,6 +24,9 @@ you can download dictionaries for your language from [LibreOffice][3].
 
 [3]: http://cgit.freedesktop.org/libreoffice/dictionaries/tree/
 
+Spelling requires that the environmental variable LANG be set.
+For example EN-US.
+
 Spelling provides commands to turn spell checking on and off on the
 current editor.  By default, the language set in your environmental
 variables is used, but the "Set language" command will change the
