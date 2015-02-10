@@ -21,6 +21,9 @@ them by adding to your `user.behaviors` file:
 Note that hunspell dictionaries are used by Firefox, LibreOffice, and
 many others, so you likely have them on your system already.  If not,
 you can download dictionaries for your language from [LibreOffice][3].
+(Windows users are reminded that backslashes need to be escaped in the
+behaviors file, so write `\\` to get a single backslash in your path.
+You may also use forward slashes in place of backslashes.)
 
 [3]: http://cgit.freedesktop.org/libreoffice/dictionaries/tree/
 
