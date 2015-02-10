@@ -10,9 +10,14 @@
   (:require-macros [lt.macros :refer [behavior]]))
 
 (def manager (js* "new OverlayManager()"))
-(def default-lang (first (.split (aget js/process.env "LANG") ".")))
 (def check-tokens #{"comment" "string" "string-2"})
 (def skip-tokens #{"atom" "attribute" "tag", "number" "variable-2" "string"})
+
+(defn default-lang []
+   (let [envLang (aget js/process.env "LAzNG")]
+     (if envLang
+       (first (.split envLang "."))
+       (first (.getLanguages manager)))))
 
 (defn addOverlay [editor lang]
   (removeOverlay editor)
@@ -59,7 +64,7 @@
           :type :user
           :exclusive true
           :reaction (fn [editor]
-                      (addOverlay editor default-lang)))
+                      (addOverlay editor (default-lang))))
 
 (behavior ::enable-lang
           :triggers #{:object.instant}
@@ -93,7 +98,7 @@
               :desc "Spell check: Enable"
               :exec (fn []
                       (when-let [editor (pool/last-active)]
-                        (addOverlay editor default-lang)))})
+                        (addOverlay editor (default-lang))))})
 
 (cmd/command {:command ::spell-disable
               :desc "Spell check: Disable"
