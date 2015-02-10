@@ -1,4 +1,4 @@
-;; Copyright 2014 Robert Schroll
+;; Copyright 2014-2015 Robert Schroll
 ;; This file is part of Spelling and is distributed under the MIT license.
 
 (ns lt.plugins.spelling

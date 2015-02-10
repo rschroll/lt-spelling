@@ -16,7 +16,7 @@ files in `/usr/share/hunspell/`, which is the default for some Linux
 systems.  If yours are stored elsewhere, you can point Spelling towards
 them by adding to your `user.behaviors` file:
 ```clojure
-{:+ {:app [(:lt.plugins.spelling/set-dictionary-location "/path/containing/dicts")]}}
+[:app :lt.plugins.spelling/set-dictionary-location "/path/containing/dicts"]
 ```
 Note that hunspell dictionaries are used by Firefox, LibreOffice, and
 many others, so you likely have them on your system already.  If not,
@@ -35,11 +35,11 @@ current editor to the language code you provide.
 
 Spell checking can be automatically enabled for certain file types by
 adding the `:lt.plugins.spelling/enable` or
-`(:lt.plugins.spelling/enable-lang <code>)` behaviors to the
+`:lt.plugins.spelling/enable-lang <code>` behaviors to the
 appropriate tags.  For example, to enable spell checking in the default
 language in all TeX files, add to your `user.behaviors` file:
 ```clojure
-{:+ {:editor.latex [:lt.plugins.spelling/enable]}}
+[:editor.latex :lt.plugins.spelling/enable]
 ```
 
 There are two modes Spelling uses to determine which words should be
@@ -51,14 +51,14 @@ Markdown, LaTeX, and plain text files are given this tag.  To indicate
 that editors with the tag `:foo` should use markup mode, add to your
 `user.behaviors` file:
 ```clojure
-{:+ {:foo [(:lt.object/add-tag :editor.spelling.markup)]}}
+[:foo :lt.object/add-tag :editor.spelling.markup]
 ```
 
 License
 -------
 Spelling is distributed under the MIT license:
 
-Copyright 2014 Robert Schroll
+Copyright 2014-2015 Robert Schroll
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
