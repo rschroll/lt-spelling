@@ -76,9 +76,13 @@ OverlayManager.prototype = {
   },
 
   getLanguages: function () {
-    return this.fs.readdirSync(this.dictDir).map(function (val) {
-      var comp = val.split(".");
-      return (comp[1] === "aff") ? comp[0] : null;
-    }).filter(function (val) { return val; });
+    try {
+      return this.fs.readdirSync(this.dictDir).map(function (val) {
+        var comp = val.split(".");
+        return (comp[1] === "aff") ? comp[0] : null;
+      }).filter(function (val) { return val; });
+    } catch (error) {
+      return [];
+    }
   }
 }
