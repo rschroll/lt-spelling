@@ -14,7 +14,7 @@
 (def skip-tokens #{"atom" "attribute" "tag", "number" "variable-2" "string"})
 
 (defn default-lang []
-   (let [envLang (aget js/process.env "LAzNG")]
+   (let [envLang (aget js/process.env "LANG")]
      (if envLang
        (first (.split envLang "."))
        (first (.getLanguages manager)))))
