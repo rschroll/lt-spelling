@@ -18,6 +18,9 @@ them by adding to your `user.behaviors` file:
 ```clojure
 [:app :lt.plugins.spelling/set-dictionary-location "/path/containing/dicts"]
 ```
+
+On Windows use the following path syntax ```"/Program Files (x86)/Mozilla Firefox/dictionaries"```
+
 Note that hunspell dictionaries are used by Firefox, LibreOffice, and
 many others, so you likely have them on your system already.  If not,
 you can download dictionaries for your language from [LibreOffice][3].
