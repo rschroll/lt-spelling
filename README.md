@@ -27,6 +27,9 @@ You may also use forward slashes in place of backslashes.)
 
 [3]: http://cgit.freedesktop.org/libreoffice/dictionaries/tree/
 
+Spelling requires that the environmental variable LANG be set.
+For example EN-US.
+
 Spelling provides commands to turn spell checking on and off on the
 current editor.  If the environmental variable `$LANG` is set, it is
 used as the default language.  Otherwise, the first dictionary found is
